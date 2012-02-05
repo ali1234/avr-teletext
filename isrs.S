@@ -21,7 +21,7 @@
 
 .macro serial_send
 	com	r16
-	sts	0xc6, r16
+	sts	UDR0, r16
 	com	r16
 .endm
 
@@ -63,14 +63,14 @@ do_line:
 	nop8		; We can't start outputting the line too early,
 	nop8		; but the following code is optimized to start
 	nop8		; outputting as soon as possible...
-	nop8
+	nop4
+
+	push 	ZL			; Save registers that are
+	push	ZH			; used only when outputting.
 
 	ldi	r16, 0x55		; Output clock run-in.
 	serial_send
 	serial_send
-
-	push 	ZL			; Save registers that are
-	push	ZH			; used only when outputting.
 
 	lds	r16, buffer_head	; Check buffer status.
 	lds	r17, buffer_tail	; 
