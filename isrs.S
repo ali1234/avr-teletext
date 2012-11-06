@@ -63,7 +63,9 @@ do_line:
 	nop8		; We can't start outputting the line too early,
 	nop8		; but the following code is optimized to start
 	nop8		; outputting as soon as possible...
-	nop4
+	nop8
+	nop8
+	nop8
 
 	push 	ZL			; Save registers that are
 	push	ZH			; used only when outputting.

@@ -19,7 +19,7 @@ void move_rows() {
 
     uint8_t i;
     for(i=0;i<NROWS;i++) {
-        fill_mrag(1, 2+((i+NROWS-first_row)%NROWS), row_buffer(i));
+        fill_mrag(1, 3+((i+NROWS-first_row)%NROWS), row_buffer(i));
     }
 
     return;
