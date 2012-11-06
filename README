@@ -9,6 +9,9 @@ multiple pages. In console mode the I2C port receives individual characters
 and emulates a framebuffer by generating a single page repeatedly. The console
 supports accelerated scrolling.
 
+A video of the device operating is here:
+https://plus.google.com/117474986382867317779/posts/eKBn5ePYWbc
+
 Hardware
 --------
 
