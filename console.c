@@ -1,5 +1,5 @@
 /*
-    Copyright 2010 Alistair Buxton <a.j.buxton@gmail.com>
+    Copyright 2012 Alistair Buxton <a.j.buxton@gmail.com>
 
     This file is part of avr-teletext.
 
