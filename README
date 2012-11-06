@@ -1,0 +1,86 @@
+avr-teletext
+------------
+
+This is a teletext inserter for AVR microcontroller. It adds teletext to an
+existing composite signal. It is controlled on I2C and features two modes.
+In passthrough mode whole teletext packets are received on I2C and inserted
+into the video signal, allowing the broadcast of an interleaved magazine with
+multiple pages. In console mode the I2C port receives individual characters
+and emulates a framebuffer by generating a single page repeatedly. The console
+supports accelerated scrolling.
+
+Hardware
+--------
+
+The hardware schematic is in schematic.png. General parts list:
+
+ * AVR microcontroller. I used Atmega 168.
+ * LM1881 sync splitter. For generating horizontal and vertical sync pulses.
+ * 13.875 MHz crystal. For AVR clock. This is double teletext frequency.
+ * 74LS244N Buffer. This is used in a slightly odd way. See below.
+ * Various resistors and capacitors.
+
+I2C addresses
+-------------
+
+The AVR implements two I2C addresses: data and control.
+
+0x00 - Data address
+
+Bits    Function
+0-6     7 bit characters written here will be placed into the output buffer.
+7       Unused.
+
+0x01 - Control address
+
+Bits
+0       Set mode. 0 = console, 1 = passthrough.
+1-7     Unused.
+
+Console mode
+------------
+
+In this mode each character received will be written into a character
+framebuffer, staring in the top left corner and moving to the right with each 
+character. When the end of the line is reached the cursor position moves to the
+beginning of the next line. When the bottom of the display is reached the row
+pointers into the buffer are shifted by 1 line, and the line at the top of the 
+display becomes the line at the bottom. This line is cleared and new characters
+go here. Essentially it is a scrolling text console. Newlines are supported.
+Setting the cursor position is not supported. The whole buffer is output on a 
+loop regardless of whether new data is available.
+
+Passthrough mode
+----------------
+
+In this mode each received character is written into the output buffer and then
+outputted only once. The buffer is used with a head and tail pointer here. When
+a row fills up the head pointer is incremented and when the row is output the 
+tail pointer is incremented. If there are no lines to output a filler line is
+output instead. This mode is intended to be used to broadcast normal teletext
+magazines with multiple interleaved pages.
+
+About that 74LS244N
+-------------------
+
+This is a tristate buffer, but it isn't used as a buffer. The AVR uses SPI to 
+output teletext signal. This signal needs to be off for most of the display
+period. When the AVR SPI has no data to output it's output goes high. When
+outputting a zero it goes low. In order to insert the teletext in an existing 
+signal we need for the SPI signal to go high impedence (ie disconnected) when
+there is nothing to output. The 74LS244N is used to do this. The signal from 
+the AVR is connected to the enable input on the 74LS244N. Since that signal is 
+active low, whenever the AVR outputs high the outputs of the 74LS244N will 
+go high impedence. When the AVR outputs low (zero), the output on the 74LS244N 
+will go high as that is their default state when unconnected. A side effect of
+this is that the signal ends up being inverted. This is countered by inverting 
+the data in the AVR before writing it:
+
+.macro serial_send
+        com     r16
+        sts     UDR0, r16
+        com     r16
+.endm
+
+"com" being complement, or invert, a register.
+
