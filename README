@@ -14,11 +14,19 @@ Hardware
 
 The hardware schematic is in schematic.png. General parts list:
 
- * AVR microcontroller. I used Atmega 168.
+ * AVR microcontroller. I used Atmega 168. Using a part with more RAM would
+   allow for multiple consoles are other fancy stuff.
+
  * LM1881 sync splitter. For generating horizontal and vertical sync pulses.
+   Hard to find in through hole package. I got it at http://www.rapidonline.com
+
  * 13.875 MHz crystal. For AVR clock. This is double teletext frequency.
+   Extremely hard to find. I got it from http://quarndon.co.uk/
+
  * 74LS244N Buffer. This is used in a slightly odd way. See below.
- * Various resistors and capacitors.
+
+ * Various resistors and capacitors. Especially you need some filter caps 
+   between ground and vcc or the output signal will be too dirty to work.
 
 I2C addresses
 -------------
