@@ -1,10 +1,19 @@
-NAME = teletext
+DEVICE=atmega168
+ifeq ($(DEVICE),atmega168)
+ DUDENAME=m168
+else ifeq ($(DEVICE),atmega328)
+ DUDENAME=m328p
+else 
+ $(error "invalid device specified: $(DEVICE)")
+endif
+ 
+NAME = teletext.$(DEVICE)
 OBJECTS = main.o isrs.o console.o passthrough.o utils.o
 CC = avr-gcc
 AS = avr-as
-CFLAGS = -mmcu=atmega168 -DF_CPU=13875000UL -s
+CFLAGS = -mmcu=$(DEVICE) -DF_CPU=13875000UL -s
 ASFLAGS = $(CFLAGS)
-AVRDUDE = avrdude -c stk200 -p m168
+AVRDUDE = avrdude -c usbasp -p $(DUDENAME)
 
 all: $(NAME).bin
 
