@@ -71,7 +71,7 @@ hsync:
 	rjmp	skip_line		
 
 do_line:
-	delay	45	; We can't start outputting the line too early,
+	delay	43	; We can't start outputting the line too early,
 			; but the following code is optimized to start
 			; outputting as soon as possible...
 
@@ -100,12 +100,12 @@ load_buffer_addr:
 	ldi	ZL, lo8(tt_buffer)	; Load address of buffers
 	ldi	ZH, hi8(tt_buffer)	; pointer array to X.
 	push 	r0
+	push	r1
 	ldi	r16, 42
 	mul	r16, r17
 	add	ZL, r0			; Add to Z.
 	adc	ZH, r1			; Carry.
-	clr	r17
-	mov 	r1, r17
+	pop	r1
 	pop	r0
 
 got_buffer:
