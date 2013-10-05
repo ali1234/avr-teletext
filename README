@@ -26,7 +26,7 @@ The hardware schematic is in schematic.png. General parts list:
  * 13.875 MHz crystal. For AVR clock. This is double teletext frequency.
    Extremely hard to find. I got it from http://quarndon.co.uk/
 
- * 74LS244N Buffer. This is used in a slightly odd way. See below.
+ * A diode to hook up the teletext to the video signal.
 
  * Various resistors and capacitors. Especially you need some filter caps 
    between ground and vcc or the output signal will be too dirty to work.
@@ -71,27 +71,22 @@ tail pointer is incremented. If there are no lines to output a filler line is
 output instead. This mode is intended to be used to broadcast normal teletext
 magazines with multiple interleaved pages.
 
-About that 74LS244N
--------------------
+The Diode
+---------
+ 
+The AVR uses SPI to output the teletext signal. The ISR enables TX in the
+horizontal interrupt before pushing out the bits at the right moment and 
+disables TX afterwards. This is neccessary, because TX would be high when
+idle. The original code dealed with it by producing an inverted signal, 
+which would later be inverted/coupled with an 74LS244N.
 
-This is a tristate buffer, but it isn't used as a buffer. The AVR uses SPI to 
-output teletext signal. This signal needs to be off for most of the display
-period. When the AVR SPI has no data to output it's output goes high. When
-outputting a zero it goes low. In order to insert the teletext in an existing 
-signal we need for the SPI signal to go high impedence (ie disconnected) when
-there is nothing to output. The 74LS244N is used to do this. The signal from 
-the AVR is connected to the enable input on the 74LS244N. Since that signal is 
-active low, whenever the AVR outputs high the outputs of the 74LS244N will 
-go high impedence. When the AVR outputs low (zero), the output on the 74LS244N 
-will go high as that is their default state when unconnected. A side effect of
-this is that the signal ends up being inverted. This is countered by inverting 
-the data in the AVR before writing it:
+When the teletext generator is idle or goes low, then the circuit should
+be disconnected from video, so that the low state does not drain current
+from the video signal. This is achieved using a diode. In fact a LED could 
+be used which, together with the right resistor value, would produce the 
+right voltage level and even indicate data transmission with a flickering 
+light. 
 
-.macro serial_send
-        com     r16
-        sts     UDR0, r16
-        com     r16
-.endm
-
-"com" being complement, or invert, a register.
+During blanking, video has negative levels agains low, but most diodes have
+a much larger forwad bias than that difference.
 

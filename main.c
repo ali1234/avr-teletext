@@ -53,8 +53,9 @@ void io_setup(void)
     UBRR0L = 0;
     // USART0 MSPIM mode, LSB
     UCSR0C = 0xc4;
-    // enable Tx
-    UCSR0B = 0x18;
+    // We don't enable TX yet, because it will go high when idle
+    // TX is enabled in the ISR during sending.
+    UCSR0B = 0;
 
     // TWI setup
     // no need to set baud rate for slave mode

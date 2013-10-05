@@ -28,9 +28,9 @@
 .endm
 
 .macro serial_send
-	com	r16
+	nop
 	sts	UDR0, r16
-	com	r16
+	nop
 .endm
 
 /* Vertical sync interrupt.
@@ -68,12 +68,15 @@ hsync:
 	rjmp	skip_line		
 
 do_line:
-	delay	48	; We can't start outputting the line too early,
+	delay	45	; We can't start outputting the line too early,
 			; but the following code is optimized to start
 			; outputting as soon as possible...
 
 	push 	ZL			; Save registers that are
 	push	ZH			; used only when outputting.
+
+	ldi	r16,0x18		; Enable TX
+	sts	UCSR0B,r16		;
 
 	ldi	r16, 0x55		; Output clock run-in.
 	serial_send
@@ -145,6 +148,9 @@ loop_f:
 
 
 done_buffer:
+	ldi	r16,0x0			; Disable TX again
+	sts	UCSR0B,r16		;
+
 	lds	r16, buffer_head	; Check buffer pointers again.
 	lds	r17, buffer_tail	; If head == tail do not increment.
 	cp	r16, r17
