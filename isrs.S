@@ -104,7 +104,7 @@ load_buffer_addr:
 	mul	r16, r17
 	add	ZL, r0			; Add to Z.
 	adc	ZH, r1			; Carry.
-	ldi	r17, 0
+	clr	r17
 	mov 	r1, r17
 	pop	r0
 
@@ -151,7 +151,7 @@ loop_f:
 
 
 done_buffer:
-	ldi	r16,0x0			; Disable TX again
+	clr	r16			; Disable TX again
 	sts	UCSR0B,r16		;
 
 	lds	r16, buffer_head	; Check buffer pointers again.
@@ -162,7 +162,7 @@ done_buffer:
 	ldi	r16, NBUFFERS		; If r17 == fill buffer then it
 	cp	r16, r17		; has overflowed. buffer_tail
 	brne	store_buffer		; should then bet set back to zero.
-	ldi	r17, 0			; 
+	clr	r17			; 
 store_buffer:
 	sts	buffer_tail, r17
 
