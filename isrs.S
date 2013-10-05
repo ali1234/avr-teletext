@@ -20,22 +20,11 @@
 #include <avr/io.h>
 #include "globals.h"
 
-.macro nop8
+.macro delay n
+.if \n
 	nop
-	nop
-	nop
-	nop
-	nop
-	nop
-	nop
-	nop
-.endm
-
-.macro nop4
-	nop
-	nop
-	nop
-	nop
+	delay (\n-1)
+.endif
 .endm
 
 .macro serial_send
@@ -79,12 +68,9 @@ hsync:
 	rjmp	skip_line		
 
 do_line:
-	nop8		; We can't start outputting the line too early,
-	nop8		; but the following code is optimized to start
-	nop8		; outputting as soon as possible...
-	nop8
-	nop8
-	nop8
+	delay	48	; We can't start outputting the line too early,
+			; but the following code is optimized to start
+			; outputting as soon as possible...
 
 	push 	ZL			; Save registers that are
 	push	ZH			; used only when outputting.
@@ -101,8 +87,7 @@ do_line:
 load_fill_buffer_addr:
 	ldi	ZL, lo8(fill_buffer)	; Load pointer to desired
 	ldi	ZH, hi8(fill_buffer)	; buffer to Z.
-	nop4
-	nop4
+	delay	8
 	rjmp	got_buffer
 
 load_buffer_addr:
@@ -137,9 +122,7 @@ loop_n:
 	ld	r16, Z+		; 2		; Load byte from Z and inc.
 	serial_send		; 4
 
-	nop			; 1
-	nop			; 1
-	nop4			; 4		; Loop must take 16 cycles.
+	delay	6		; 6		; Loop must take 16 cycles.
 
 	dec	r17		; 1
 	brne	loop_n		; 1 or 2
@@ -154,9 +137,7 @@ loop_f:
 	lpm	r16, Z+		; 3		; Load byte from Z and inc.
 	serial_send		; 4
 	
-	nop			; 1
-	nop			; 1
-	nop4			; 4		; Loop must take 16 cycles.
+	delay	6		; 6		; Loop must take 16 cycles.
 
 	dec	r17		; 1
 	brne	loop_f		; 1 or 2
