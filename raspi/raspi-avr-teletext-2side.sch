@@ -6,7 +6,7 @@
 <setting alwaysvectorfont="yes"/>
 <setting verticaltext="up"/>
 </settings>
-<grid distance="0.1" unitdist="inch" unit="inch" style="lines" multiple="1" display="no" altdistance="0.05" altunitdist="inch" altunit="inch"/>
+<grid distance="0.1" unitdist="inch" unit="inch" style="lines" multiple="1" display="no" altdistance="0.01" altunitdist="inch" altunit="inch"/>
 <layers>
 <layer number="1" name="Top" color="4" fill="1" visible="no" active="no"/>
 <layer number="16" name="Bottom" color="1" fill="1" visible="no" active="no"/>
@@ -9438,12 +9438,10 @@ Source: http://www.lumberg.de/Produkte/PDFs/WBTOR1.pdf</description>
 <label x="115.57" y="22.225" size="1.778" layer="95"/>
 </segment>
 <segment>
-<pinref part="D1" gate="G$1" pin="19-SPI-MOSI"/>
-<wire x1="152.4" y1="33.02" x2="149.86" y2="33.02" width="0.1524" layer="91"/>
-<wire x1="149.86" y1="33.02" x2="144.78" y2="27.94" width="0.1524" layer="91"/>
-<wire x1="144.78" y1="27.94" x2="142.24" y2="27.94" width="0.1524" layer="91"/>
+<pinref part="D1" gate="G$1" pin="21-SPI-MISO"/>
 <junction x="142.24" y="27.94"/>
 <label x="141.605" y="27.305" size="1.778" layer="95" rot="MR0"/>
+<wire x1="152.4" y1="27.94" x2="142.24" y2="27.94" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="MOSI" class="0">
@@ -9454,12 +9452,10 @@ Source: http://www.lumberg.de/Produkte/PDFs/WBTOR1.pdf</description>
 <label x="115.57" y="24.765" size="1.778" layer="95"/>
 </segment>
 <segment>
-<pinref part="D1" gate="G$1" pin="21-SPI-MISO"/>
-<wire x1="152.4" y1="27.94" x2="149.86" y2="27.94" width="0.1524" layer="91"/>
-<wire x1="149.86" y1="27.94" x2="144.78" y2="33.02" width="0.1524" layer="91"/>
-<wire x1="144.78" y1="33.02" x2="142.24" y2="33.02" width="0.1524" layer="91"/>
+<pinref part="D1" gate="G$1" pin="19-SPI-MOSI"/>
 <junction x="142.24" y="33.02"/>
 <label x="141.605" y="32.385" size="1.778" layer="95" rot="MR0"/>
+<wire x1="152.4" y1="33.02" x2="142.24" y2="33.02" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="SCK" class="0">
